@@ -67,7 +67,7 @@ st.markdown("""
         border-left: 4px solid #2E7D32;
     }
     .insight-box {
-        background-color: #e8f5e8;
+        background-color: Black;
         padding: 1rem;
         border-radius: 0.5rem;
         margin: 1rem 0;
