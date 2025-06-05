@@ -15,11 +15,40 @@ warnings.filterwarnings('ignore')
 
 # Set page config
 st.set_page_config(
-    page_title="Field Activity Data Insights",
-    page_icon="📊",
+    page_title="Mahyco HTML Analyser",
+    page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Password protection function
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["password"] == "mahyco2024":
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # don't store password
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # First run, show input for password.
+        st.text_input(
+            "Password", type="password", on_change=password_entered, key="password"
+        )
+        return False
+    elif not st.session_state["password_correct"]:
+        # Password not correct, show input + error.
+        st.text_input(
+            "Password", type="password", on_change=password_entered, key="password"
+        )
+        st.error("😕 Password incorrect")
+        return False
+    else:
+        # Password correct.
+        return True
 
 # Custom CSS for better styling
 st.markdown("""
@@ -38,10 +67,11 @@ st.markdown("""
         border-left: 4px solid #2E7D32;
     }
     .insight-box {
-        background-color: Black;
+        background-color: #e8f5e8;
         padding: 1rem;
         border-radius: 0.5rem;
         margin: 1rem 0;
+        border-left: 4px solid #4CAF50;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -486,7 +516,12 @@ def generate_insights(df):
         st.info("No specific insights could be generated with the available columns")
 
 def main():
-    st.markdown('<h1 class="main-header">📊 Field Activity Data Insights Dashboard</h1>', 
+    # Check password first
+    if not check_password():
+        st.stop()
+    
+    # Main application content
+    st.markdown('<h1 class="main-header">🌾 Mahyco HTML Analyser</h1>', 
                 unsafe_allow_html=True)
     
     # Sidebar
@@ -494,7 +529,7 @@ def main():
     uploaded_file = st.sidebar.file_uploader(
         "Upload your HTML file",
         type=['html', 'htm'],
-        help="Upload the HTML file containing your 287 records"
+        help="Upload the HTML file containing your field activity records"
     )
     
     if uploaded_file is not None:
